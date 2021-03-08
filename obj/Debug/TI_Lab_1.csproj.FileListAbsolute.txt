@@ -1,0 +1,7 @@
+D:\С#\TI_Lab_1\bin\Debug\TI_Lab_1.exe.config
+D:\С#\TI_Lab_1\bin\Debug\TI_Lab_1.exe
+D:\С#\TI_Lab_1\bin\Debug\TI_Lab_1.pdb
+D:\С#\TI_Lab_1\obj\Debug\TI_Lab_1.csprojAssemblyReference.cache
+D:\С#\TI_Lab_1\obj\Debug\TI_Lab_1.csproj.CoreCompileInputs.cache
+D:\С#\TI_Lab_1\obj\Debug\TI_Lab_1.exe
+D:\С#\TI_Lab_1\obj\Debug\TI_Lab_1.pdb
