@@ -30,7 +30,6 @@ namespace TI_Lab_1
             }
             return ciphertext;
         }
-
         public static string RailFence_Decrypt(string ciphertext, Int32 key)
         {
             string plaintext = "";
@@ -76,10 +75,51 @@ namespace TI_Lab_1
             return plaintext;
         }
 
+        public static string Caesar_Encrypt(string plaintext, Int32 key)
+        {
+            string ciphertext = "";
+
+            for (Int32 i = 0; i < plaintext.Length; i++)
+            {
+                if (plaintext[i] >= 'a' && plaintext[i] <= 'z')
+                    ciphertext += (char)((plaintext[i] - 'a' + key) % 26 + 'a');
+                else if (plaintext[i] >= 'A' && plaintext[i] <= 'Z')
+                    ciphertext += (char)((plaintext[i] - 'A' + key) % 26 + 'A');
+                else if (plaintext[i] >= 'а' && plaintext[i] <= 'я')
+                    ciphertext += (char)((plaintext[i] - 'а' + key) % 33 + 'а');
+                else if (plaintext[i] >= 'А' && plaintext[i] <= 'Я')
+                    ciphertext += (char)((plaintext[i] - 'А' + key) % 33 + 'А');
+                else ciphertext += (char)(plaintext[i] + key);
+            }
+            return ciphertext;
+        }
+
+        public static string Caesar_Decrypt(string ciphertext, Int32 key)
+        {
+            string plaintext = "";
+
+            for (Int32 i = 0; i < ciphertext.Length; i++)
+            {
+                if (ciphertext[i] >= 'a' && ciphertext[i] <= 'z')
+                    plaintext += (char)((ciphertext[i] - 'a' + 26 - key) % 26 + 'a');
+                else if (ciphertext[i] >= 'A' && ciphertext[i] <= 'Z')
+                    plaintext += (char)((ciphertext[i] - 'A' + 26 - key) % 26 + 'A');
+                else if (ciphertext[i] >= 'а' && ciphertext[i] <= 'я')
+                    plaintext += (char)((ciphertext[i] - 'а' + 33 - key) % 33 + 'а');
+                else if (ciphertext[i] >= 'А' && ciphertext[i] <= 'Я')
+                    plaintext += (char)((ciphertext[i] - 'А' + 26 - key) % 33 + 'А');
+                else plaintext += (char)(ciphertext[i] - key);
+            }
+            return plaintext;
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine(RailFence_Encrypt("SOME MESSAGE", 4));
             Console.WriteLine(RailFence_Decrypt(RailFence_Encrypt("SOME MESSAGE", 4), 4));
+
+            Console.WriteLine(Caesar_Encrypt("SOME MESSAGE", 3));
+            Console.WriteLine(Caesar_Decrypt(Caesar_Encrypt("SOME MESSAGE", 3), 3));
         }
     }
 }
