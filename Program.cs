@@ -8,6 +8,9 @@ namespace TI_Lab_1
 {
     class Program
     {
+        const string turningKey1 = "1010000001001100100001000";
+        const string turningKey2 = "0000100000001010011100010";
+
         private static string RailFence_Encrypt(string plaintext, Int32 key)
         {
             string ciphertext = "";
@@ -211,16 +214,233 @@ namespace TI_Lab_1
             return plaintext;
         }
 
+        public static string Turning_Encrypt(string plaintext, string key)
+        {
+            string ciphertext = "";
+            Int32 index = 0;
+            bool[,] punchingMask;
+            Int32 sizeMatr = 5;
+            punchingMask = new bool[sizeMatr, sizeMatr];
+            char[,] cipherMatrix = new char[sizeMatr, sizeMatr];
+            bool saveCenterCell;
+
+            for (Int32 i = 0; i < sizeMatr; ++i)
+                for (Int32 j = 0; j < sizeMatr; ++j)
+                    if (key[index++] == '0')
+                        punchingMask[i, j] = false;
+                    else
+                        punchingMask[i, j] = true;
+
+            saveCenterCell = punchingMask[sizeMatr / 2, sizeMatr / 2];
+            index = 0;
+
+            while (plaintext.Length % (sizeMatr * sizeMatr) != 0)
+                plaintext += ' ';                      
+
+            while (index < plaintext.Length - 1)
+            {
+                for (Int32 i = 0; i < sizeMatr; ++i)
+                {
+                    for (Int32 j = 0; j < sizeMatr; ++j)
+                    {
+                        if (punchingMask[i, j])
+                            cipherMatrix[i, j] = plaintext[index++];
+                    }
+                }
+
+                if (punchingMask[sizeMatr / 2, sizeMatr / 2])
+                    punchingMask[sizeMatr / 2, sizeMatr / 2] = false;
+                
+                for (Int32 i = 0; i < sizeMatr; i++)
+                {
+                    for (Int32 j = 0; j < sizeMatr; j++)
+                    {
+                        if (punchingMask[i, j])
+                            cipherMatrix[j, sizeMatr - 1 - i] = plaintext[index++];
+                    }
+                }
+
+                for (Int32 i = sizeMatr - 1; i >= 0; i--)
+                {
+                    for (Int32 j = sizeMatr - 1; j >= 0; j--)
+                    {
+                        if (punchingMask[sizeMatr - 1 - i, sizeMatr - 1 - j])
+                            cipherMatrix[i, j] = plaintext[index++];
+                    }
+                }
+
+                for (Int32 i = 0; i < sizeMatr - 1; i++)
+                {
+                    for (Int32 j = sizeMatr - 1; j >= 0; j--)
+                    {
+                        if (punchingMask[i, sizeMatr - 1 - j])
+                            cipherMatrix[j, i] = plaintext[index++];
+                    }
+                }
+
+                for (int i = 0; i < sizeMatr; ++i)
+                {
+                    for (int j = 0; j < sizeMatr; ++j)
+                    {
+                        ciphertext += cipherMatrix[i, j];
+                    }
+                }
+
+                punchingMask[sizeMatr / 2, sizeMatr / 2] = saveCenterCell;
+            }
+
+            return ciphertext;
+        }
+        public static string Turning_Decrypt(string ciphertext, string key)
+        {
+            string plaintext = "";
+            Int32 index = 0;
+            bool[,] punchingMask;
+            Int32 sizeMatr = 5;
+            punchingMask = new bool[sizeMatr, sizeMatr];
+            char[,] plainMatrix = new char[sizeMatr, sizeMatr];
+            bool saveCenterCell;
+
+            for (Int32 i = 0; i < sizeMatr; ++i)
+                for (Int32 j = 0; j < sizeMatr; ++j)
+                    if (key[index++] == '0')
+                        punchingMask[i, j] = false;
+                    else
+                        punchingMask[i, j] = true;
+
+            saveCenterCell = punchingMask[sizeMatr / 2, sizeMatr / 2];
+            index = 0;
+
+            while (ciphertext.Length % (sizeMatr * sizeMatr) != 0)
+                ciphertext += ' ';
+
+            for (Int32 i = 0; i < sizeMatr; i++)
+            {
+                for (Int32 j = 0; j < sizeMatr; j++)
+                {
+                    plainMatrix[i, j] = ciphertext[index++];
+                }
+            }
+
+            for (Int32 i = 0; i < sizeMatr; ++i)
+            {
+                for (Int32 j = 0; j < sizeMatr; ++j)
+                {
+                    if (punchingMask[i, j])
+                        plaintext += plainMatrix[i, j];
+                }
+            }
+
+            if (punchingMask[sizeMatr / 2, sizeMatr / 2])
+                punchingMask[sizeMatr / 2, sizeMatr / 2] = false;
+
+            for (Int32 i = 0; i < sizeMatr; i++)
+            {
+                for (Int32 j = 0; j < sizeMatr; j++)
+                {
+                    if (punchingMask[i, j])
+                        plaintext += plainMatrix[j, sizeMatr - 1 - i];
+                }
+            }
+
+            for (Int32 i = sizeMatr - 1; i >= 0; i--)
+            {
+                for (Int32 j = sizeMatr - 1; j >= 0; j--)
+                {
+                    if (punchingMask[sizeMatr - 1 - i, sizeMatr - 1 - j])
+                        plaintext += plainMatrix[i, j];
+                }
+            }
+
+            for (Int32 i = 0; i < sizeMatr - 1; i++)
+            {
+                for (Int32 j = sizeMatr - 1; j >= 0; j--)
+                {
+                    if (punchingMask[i, sizeMatr - 1 - j])
+                        plaintext += plainMatrix[j, i];
+                }
+            }
+            punchingMask[sizeMatr / 2, sizeMatr / 2] = saveCenterCell;
+
+            return plaintext;
+        }
+
+
         static void Main(string[] args)
         {
-            Console.WriteLine(Column_Encrypt("SOME MESSAGE", "ALESYA"));
-            Console.WriteLine(Column_Decrypt(Column_Encrypt("SOME MESSAGE", "ALESYA"), "ALESYA"));
+            Int32 chipher, action;
+            string plaintext, key;            
+            
+            string name = (Column_Encrypt("ALESYA VERY LUCK", "CRYPTOGRAPHY"));
+            Console.WriteLine(name);
+            Console.WriteLine(Column_Decrypt(name, "CRYPTOGRAPHY"));
+            
+            do
+            {
+                Console.WriteLine("Choose chipher:\n1. RailFence.\n2. Column.\n3. Turning.\n4. Caesar.\n");
+                chipher = Int32.Parse(Console.ReadLine());
 
-            Console.WriteLine(RailFence_Encrypt("SOME MESSAGE", 4));
-            Console.WriteLine(RailFence_Decrypt(RailFence_Encrypt("SOME MESSAGE", 4), 4));
+                Console.WriteLine("Choose action:\n1. Encrypt.\n2. Decrypt.\n");
+                action = Int32.Parse(Console.ReadLine());
 
-            Console.WriteLine(Caesar_Encrypt("SOME MESSAGE", 3));
-            Console.WriteLine(Caesar_Decrypt(Caesar_Encrypt("SOME MESSAGE", 3), 3));
+                Console.Write("Enter your text to encrypt: ");
+                plaintext = Console.ReadLine();
+
+                Console.Write("Enter your key to encrypt: ");
+                key = Console.ReadLine();
+
+                if (action == 1)
+                {
+                    switch (chipher)
+                    {
+                        case 1:
+                            Console.WriteLine(RailFence_Encrypt(plaintext, Convert.ToInt32(key)));
+                            break;
+                        case 2:
+                            Console.WriteLine(Column_Encrypt(plaintext, key));
+                            break;
+                        case 3:
+                            Console.WriteLine(Turning_Encrypt(plaintext, turningKey2));
+                            break;
+                        case 4:
+                            Console.WriteLine(Caesar_Encrypt(plaintext, Convert.ToInt32(key)));
+                            break;
+                        default:
+                            Console.WriteLine("Nothing choose...");
+                            break;
+                    }
+                }
+                else if (action == 2)
+                {
+                    switch (chipher)
+                    {
+                        case 1:
+                            Console.WriteLine(RailFence_Decrypt(plaintext, Convert.ToInt32(key)));
+                            break;
+                        case 2:
+                            Console.WriteLine(Column_Decrypt(plaintext, key));
+                            break;
+                        case 3:
+                            Console.WriteLine(Turning_Decrypt(plaintext, turningKey2));
+                            break;
+                        case 4:
+                            Console.WriteLine(Caesar_Decrypt(plaintext, Convert.ToInt32(key)));
+                            break;
+                        default:
+                            Console.WriteLine("Nothing choose...");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Nothing choose...");
+                }
+
+                Console.WriteLine("\n");
+
+            } while (true);
+            
         }
+
     }
 }
